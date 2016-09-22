@@ -1,4 +1,4 @@
-# DBSCAN
+# SQL & NoSQL
 
 Exercise 5 of 02807 Computational Tools for Big Data at DTU
 
