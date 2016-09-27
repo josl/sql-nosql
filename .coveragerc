@@ -10,7 +10,7 @@ omit =
     *tests.py
 branch = True
 source =
-    SQL&NOSQL
+    SQL_NOSQL
 
 [report]
 exclude_lines =
