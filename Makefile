@@ -1,5 +1,5 @@
-# This file is part of SQL-NOSQL.
-# https://github.com/josl/sql-nosql
+# This file is part of SQL_NOSQL.
+# https://github.com/josl/SQL_NOSQL
 
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/MIT-license
@@ -28,7 +28,7 @@ coverage-html: unit
 
 # get a mongodb instance up (localhost:3333)
 mongo: kill_mongo
-	@mkdir -p /tmp/SQL-NOSQL/mongodata && mongod --dbpath /tmp/SQL-NOSQL/mongodata --logpath /tmp/SQL-NOSQL/mongolog --port 3333 --quiet &
+	@mkdir -p /tmp/SQL_NOSQL/mongodata && mongod --dbpath /tmp/SQL_NOSQL/mongodata --logpath /tmp/SQL_NOSQL/mongolog --port 3333 --quiet &
 
 # kill this mongodb instance (localhost:3333)
 kill_mongo:
@@ -36,12 +36,12 @@ kill_mongo:
 
 # clear all data in this mongodb instance (localhost: 3333)
 clear_mongo:
-	@rm -rf /tmp/SQL-NOSQL && mkdir -p /tmp/SQL-NOSQL/mongodata
+	@rm -rf /tmp/SQL_NOSQL && mkdir -p /tmp/SQL_NOSQL/mongodata
 
 # get a mongodb instance up for your unit tests (localhost:3334)
 mongo_test: kill_mongo_test
-	@rm -rf /tmp/SQL-NOSQL/mongotestdata && mkdir -p /tmp/SQL-NOSQL/mongotestdata
-	@mongod --dbpath /tmp/SQL-NOSQL/mongotestdata --logpath /tmp/SQL-NOSQL/mongotestlog --port 3334 --quiet --fork
+	@rm -rf /tmp/SQL_NOSQL/mongotestdata && mkdir -p /tmp/SQL_NOSQL/mongotestdata
+	@mongod --dbpath /tmp/SQL_NOSQL/mongotestdata --logpath /tmp/SQL_NOSQL/mongotestlog --port 3334 --quiet --fork
 	@echo 'waiting for mongo...'
 	@until mongo --port 3334 --eval "quit()"; do sleep 0.25; done > /dev/null 2> /dev/null
 
@@ -54,4 +54,4 @@ tox:
 	@tox
 
 #docs:
-	#@cd SQL-NOSQL/docs && make html && open _build/html/index.html
+	#@cd SQL_NOSQL/docs && make html && open _build/html/index.html

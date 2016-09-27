@@ -8,14 +8,11 @@
 # http://www.opensource.org/licenses/MIT-license
 # Copyright (c) 2016, Jose L. Bellod Cisneros <bellod.cisneros@gmail.com>
 
-from unittest import TestCase as PythonTestCase
-from SQL_NOSQL.ex1 import ex1SQLite
+from SQL_NOSQL.version import __version__  # NOQA
+import sqlite3
+from pymongo import MongoClient
 
 
-class TestCase(PythonTestCase):
-    def ex1Test(self):
-        ans = ex1SQLite()
-        print('lalalala')
-        return ans
-        print(ans)
-        self.assertTrue(False)
+conn = sqlite3.connect('database/northwind.db')
+client = MongoClient('mongodb://localhost:27017/')
+db = client.Northwind
