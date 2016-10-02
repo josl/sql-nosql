@@ -151,3 +151,4 @@ def ex4Mongo():
     # {'Customers': ['Mary Saveley'], '_id': 'VICTE', 'count': 2}
     # {'Customers': ['Elizabeth Lincoln'], '_id': 'BOTTM', 'count': 1}
     # {'Customers': ['Art Braunschweiger'], '_id': 'SPLIR', 'count': 1}
+    # 20
