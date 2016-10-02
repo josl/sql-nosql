@@ -41,28 +41,61 @@ def ex2SQLite():
 
 def ex2Mongo():
     customerID = 'ALFKI'
-    db.orders.aggregate([
-        {$match: {'CustomerID': 'ALFKI'}},
-        {$lookup: {
-            from: 'order-details',
-            localField: 'OrderID',
-            foreignField: 'OrderID',
-            as: 'Products'
+    # db.orders.aggregate([
+    #     {$match: {'CustomerID': 'ALFKI'}},
+    #     {$lookup: {
+    #         from: 'order-details',
+    #         localField: 'OrderID',
+    #         foreignField: 'OrderID',
+    #         as: 'Products'
+    #     }},
+    #     {$unwind: '$Products'},
+    #     {$lookup: {
+    #         from: 'products',
+    #         localField: 'Products.ProductID',
+    #         foreignField: 'ProductID',
+    #         as: 'Products'
+    #     }},
+    #     {$project: {
+    #         'OrderID': 1,
+    #         'Products.ProductName': 1,
+    #         'Products.ProductID': 1
+    #     }},
+    # ])
+    pipeline = [
+        {'$match': {'CustomerID': 'ALFKI'}},
+        {'$lookup': {
+            'from': 'order-details',
+            'localField': 'OrderID',
+            'foreignField': 'OrderID',
+            'as': 'Products'
         }},
-        {$unwind: '$Products'},
-        {$lookup: {
-            from: 'products',
-            localField: 'Products.ProductID',
-            foreignField: 'ProductID',
-            as: 'Products'
+        {'$unwind': '$Products'},
+        {'$lookup': {
+            'from': 'products',
+            'localField': 'Products.ProductID',
+            'foreignField': 'ProductID',
+            'as': 'Products'
         }},
-        {$project: {
+        {'$project': {
             'OrderID': 1,
-            'OrderDate': 1,
             'Products.ProductName': 1,
-            'Products.ProductID': 1
-        }}
-    ])
+            'Products.ProductID': 1,
+            '_id': 0
+        }},
+    ]
+    for orders in db.orders.aggregate(pipeline):
+        print(orders)
 
-    # for post in db.customers.find({'CustomerID': {}}):
-    #     print(post['CustomerID'])
+    # {'Products': [{'ProductID': 28, 'ProductName': 'Rössle Sauerkraut'}], 'OrderID': 10643}
+    # {'Products': [{'ProductID': 46, 'ProductName': 'Spegesild'}], 'OrderID': 10643}
+    # {'Products': [{'ProductID': 39, 'ProductName': 'Chartreuse verte'}], 'OrderID': 10643}
+    # {'Products': [{'ProductID': 63, 'ProductName': 'Vegie-spread'}], 'OrderID': 10692}
+    # {'Products': [{'ProductID': 3, 'ProductName': 'Aniseed Syrup'}], 'OrderID': 10702}
+    # {'Products': [{'ProductID': 76, 'ProductName': 'Lakkalikööri'}], 'OrderID': 10702}
+    # {'Products': [{'ProductID': 59, 'ProductName': 'Raclette Courdavault'}], 'OrderID': 10835}
+    # {'Products': [{'ProductID': 77, 'ProductName': 'Original Frankfurter grüne Soße'}], 'OrderID': 10835}
+    # {'Products': [{'ProductID': 6, 'ProductName': "Grandma's Boysenberry Spread"}], 'OrderID': 10952}
+    # {'Products': [{'ProductID': 28, 'ProductName': 'Rössle Sauerkraut'}], 'OrderID': 10952}
+    # {'Products': [{'ProductID': 71, 'ProductName': 'Flotemysost'}], 'OrderID': 11011}
+    # {'Products': [{'ProductID': 58, 'ProductName': 'Escargots de Bourgogne'}], 'OrderID': 11011}
