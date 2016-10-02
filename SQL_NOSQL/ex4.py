@@ -19,7 +19,7 @@ Determine how many and who ordered “Uncle Bob’s Organic Dried Pears”
 '''
 
 
-def ex2SQLite():
+def ex4SQLite():
     c = conn.cursor()
     productID = 7
 
@@ -59,31 +59,31 @@ def ex2SQLite():
     # return orders
 
 
-def ex2Mongo():
-    db['order-details'].aggregate([
-        {$match: {'ProductID': 7}},
-        {$lookup: {
-            from: 'orders',
-            localField: 'OrderID',
-            foreignField: 'OrderID',
-            as: 'Customers'
-        }},
-        {$unwind: '$Customers'},
-        {$group: {
-            _id: '$Customers.CustomerID',
-            count: {$sum: 1}
-        }},
-        {$lookup: {
-            from: 'customers',
-            localField: '_id',
-            foreignField: 'CustomerID',
-            as: 'Customers'
-        }},
-        {$project: {
-            'Customers': '$Customers.ContactName',
-            count: 1
-        }},
-    ])
+def ex4Mongo():
+    # db['order-details'].aggregate([
+    #     {$match: {'ProductID': 7}},
+    #     {$lookup: {
+    #         from: 'orders',
+    #         localField: 'OrderID',
+    #         foreignField: 'OrderID',
+    #         as: 'Customers'
+    #     }},
+    #     {$unwind: '$Customers'},
+    #     {$group: {
+    #         _id: '$Customers.CustomerID',
+    #         count: {$sum: 1}
+    #     }},
+    #     {$lookup: {
+    #         from: 'customers',
+    #         localField: '_id',
+    #         foreignField: 'CustomerID',
+    #         as: 'Customers'
+    #     }},
+    #     {$project: {
+    #         'Customers': '$Customers.ContactName',
+    #         count: 1
+    #     }},
+    # ])
     # { "_id" : "LILAS", "count" : 1, "Customers" : [ "Carlos González" ] }
     # { "_id" : "OCEAN", "count" : 1, "Customers" : [ "Yvonne Moncada" ] }
     # { "_id" : "EASTC", "count" : 2, "Customers" : [ "Ann Devon" ] }
@@ -104,5 +104,50 @@ def ex2Mongo():
     # { "_id" : "VICTE", "count" : 2, "Customers" : [ "Mary Saveley" ] }
     # { "_id" : "BOTTM", "count" : 1, "Customers" : [ "Elizabeth Lincoln" ] }
     # { "_id" : "SPLIR", "count" : 1, "Customers" : [ "Art Braunschweiger" ] }
-    # for post in db.customers.find({'CustomerID': {}}):
-    #     print(post['CustomerID'])
+    pipeline = [
+            {'$match': {'ProductID': 7}},
+            {'$lookup': {
+                'from': 'orders',
+                'localField': 'OrderID',
+                'foreignField': 'OrderID',
+                'as': 'Customers'
+            }},
+            {'$unwind': '$Customers'},
+            {'$group': {
+                '_id': '$Customers.CustomerID',
+                'count': {'$sum': 1}
+            }},
+            {'$lookup': {
+                'from': 'customers',
+                'localField': '_id',
+                'foreignField': 'CustomerID',
+                'as': 'Customers'
+            }},
+            {'$project': {
+                'Customers': '$Customers.ContactName',
+                'count': 1
+            }},
+        ]
+    for customer in db['order-details'].aggregate(pipeline):
+        print(customer)
+    print(len(list(db['order-details'].aggregate(pipeline))))
+    # {'Customers': ['Carlos González'], '_id': 'LILAS', 'count': 1}
+    # {'Customers': ['Yvonne Moncada'], '_id': 'OCEAN', 'count': 1}
+    # {'Customers': ['Ann Devon'], '_id': 'EASTC', 'count': 2}
+    # {'Customers': ['Jonas Bergulfsen'], '_id': 'SANTG', 'count': 1}
+    # {'Customers': ['Maurizio Moroni'], '_id': 'REGGC', 'count': 2}
+    # {'Customers': ['Daniel Tonini'], '_id': 'LACOR', 'count': 1}
+    # {'Customers': ['Henriette Pfalzheim'], '_id': 'OTTIK', 'count': 2}
+    # {'Customers': ['André Fonseca'], '_id': 'GOURL', 'count': 1}
+    # {'Customers': ['Jose Pavarotti'], '_id': 'SAVEA', 'count': 1}
+    # {'Customers': ['Roland Mendel'], '_id': 'ERNSH', 'count': 1}
+    # {'Customers': ['Laurence Lebihan'], '_id': 'BONAP', 'count': 2}
+    # {'Customers': ['Horst Kloss'], '_id': 'QUICK', 'count': 2}
+    # {'Customers': ['Paula Wilson'], '_id': 'RATTC', 'count': 3}
+    # {'Customers': ['Martine Rancé'], '_id': 'FOLIG', 'count': 1}
+    # {'Customers': ['Maria Larsson'], '_id': 'FOLKO', 'count': 1}
+    # {'Customers': ['Victoria Ashworth'], '_id': 'BSBEV', 'count': 2}
+    # {'Customers': ['Palle Ibsen'], '_id': 'VAFFE', 'count': 1}
+    # {'Customers': ['Mary Saveley'], '_id': 'VICTE', 'count': 2}
+    # {'Customers': ['Elizabeth Lincoln'], '_id': 'BOTTM', 'count': 1}
+    # {'Customers': ['Art Braunschweiger'], '_id': 'SPLIR', 'count': 1}
